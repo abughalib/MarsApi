@@ -39,6 +39,10 @@ class OverviewViewModel : ViewModel() {
     // The internal MutableLiveData String that stores the most recent response
     private val _response = MutableLiveData<String>()
 
+    private val _property = MutableLiveData<MarsProperty>()
+    val property: LiveData<MarsProperty>
+    get() = _property
+
     // The external immutable LiveData for the response String
     val response: LiveData<String>
         get() = _response
@@ -64,9 +68,11 @@ class OverviewViewModel : ViewModel() {
             try {
                 val listResult = getPropertiesDeferred.await()
                 _response.value = "Success: ${listResult.size} retrieved"
+                if(listResult.isNotEmpty()){
+                    _property.value = listResult[0]
+                }
             } catch (e: Exception) {
                 _response.value = "Failure: ${e.message}"
-
             }
         }
     }
